@@ -18,7 +18,7 @@
 ![Repo DOI badge](https://img.shields.io/badge/Repo_DOI-TBD-8A2BE2)
 
 <p align="center">
-	<img width="800" height="600" src="https://github.com/user-attachments/assets/5f90fccd-5a4f-44ac-adb2-c040ba39ae06" 	alt="RiskPath_Pipeline_Visualized_Optional")
+	<img width="800" height="600" src="https://github.com/user-attachments/assets/f6ac67e4-68ff-4a25-bd17-bb471e3e86b6" 	alt="RiskPath_Pipeline_Visualized_Optional")
 </p>
 
 # :crystal_ball: Abstract #
@@ -72,13 +72,12 @@ plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10)
 ```
 
 <p align="center">
-	<img width="800" height="600" src="https://github.com/user-attachments/assets/89edbf4e-7256-4a1a-9825-cc30ced5660c" alt="Animated_SHAP")
+	<img width="800" height="600" src="https://github.com/user-attachments/assets/73ed8833-c76c-483e-8c35-42c47236f572" alt="Animated_SHAP")
 </p>
-<!-- Old Animated PNG: https://github.com/user-attachments/assets/d42b4998-90f8-4904-bee1-ea2e5f3e7e59 -->
 
 See [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1yBqKy2ZnF3Aq8QnBMAU03xyUCJTZu8Cr?usp=sharing) for a detailed tutorial on our other visualization tools for performance statistics and SHAP values. 
 
-![RiskPath_Visualization_Grey](https://github.com/user-attachments/assets/ac81a5d2-ee1e-48dd-b015-deeeec84762c)
+![RiskPath_Visualization_Grey](https://github.com/user-attachments/assets/c300ff3a-d534-433f-a9f6-dc8098fd2605)
 
 # :speech_balloon: Script Description #
 
