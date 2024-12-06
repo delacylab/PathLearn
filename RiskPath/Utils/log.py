@@ -69,7 +69,7 @@ def create_log(filename: Optional[str] = None):
     sys.stderr = ConsoleToLogger(logging.getLogger(), logging.ERROR)
     print('='*100, flush=True)
     print(f'Logging of {os.path.basename(sys.argv[0])}', flush=True)
-    print(f"Start time: {filename}", flush=True)
+    print(f"Start time: {start_time.strftime('%Y_%m_%d_%H_%M_%S')}", flush=True)
     print('Logging starts.', flush=True)
     print('='*100, flush=True)
 
