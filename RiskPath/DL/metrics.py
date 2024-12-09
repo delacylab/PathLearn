@@ -137,7 +137,7 @@ def classify_AUROC(y_true: np.ndarray,
                    y_score: np.ndarray,
                    prefix: str = "",
                    average: Optional[Literal['micro', 'macro']] = 'micro',
-                   auroc_only: str = True):
+                   auroc_only: bool = True):
     """
     Compute AUROC (Area Under the Receiver Operating Characteristic curve), TPR (True Positive Rates), and FPR (False
     Positive Rates) by comparing the true labels and the predicted probability measures (NOT the predicted labels). In
