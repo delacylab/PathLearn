@@ -29,6 +29,7 @@ from .metrics import classify_metrics, classify_AUROC, classify_AIC_BIC, regress
 from captum.attr import GradientShap
 from functools import partial
 from sklearn.model_selection import KFold, StratifiedKFold
+from time import time
 from typing import Union, Literal, Optional
 
 ########################################################################################################################
@@ -245,6 +246,8 @@ class RPClassifier:
         # Start grid search
         for param in self.param_grid:
 
+            start_time = time()
+          
             # Storing characteristics of the best-performing model during cross-validation
             best_val_score, best_model, best_performance = float('-inf'), None, None
             best_train_TFPR, best_val_TFPR = None, None
@@ -310,9 +313,13 @@ class RPClassifier:
                     self.partial_SHAP[param] = partial(GradientShap(M).attribute,
                                                        baselines=torch.tensor(X_train, dtype=torch.float32))
 
+            end_time = time()
+            elapsed = end_time - start_time
+          
             # Store the best-performing model and its associated statistics for each param in A2
             self.models_dict[param] = best_model
             self.models_performance_dict[param] = best_performance
+            self.models_performance_dict[param]['Elapsed_train_time'] = elapsed  # Elapsed time of the cross-validation
             self.TFPR_dict['Train'][param] = best_train_TFPR
             self.TFPR_dict['Val'][param] = best_val_TFPR
             self.is_fitted = True
