@@ -209,9 +209,9 @@ class ANN_Classifier(DL_Class):
         for _ in range(n_layers-1):
             modules += [nn.Linear(n_units, n_units), nn.ReLU()]
         if n_classes == 2:
-            modules += [nn.Linear(n_units, 1), nn.ReLU()]
+            modules += [nn.Linear(n_units, 1)]
         else:
-            modules += [nn.Linear(n_units, self.n_classes), nn.ReLU()]
+            modules += [nn.Linear(n_units, self.n_classes)]
         self.model = nn.Sequential(*modules)
 
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
@@ -295,7 +295,7 @@ class ANN_Regressor(DL_Class):
         modules = [nn.Linear(n_feat, n_units), nn.ReLU()]
         for _ in range(n_layers-1):
             modules += [nn.Linear(n_units, n_units), nn.ReLU()]
-        modules += [nn.Linear(n_units, 1), nn.ReLU()]
+        modules += [nn.Linear(n_units, 1)]
         self.model = nn.Sequential(*modules)
 
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
