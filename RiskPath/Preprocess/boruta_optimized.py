@@ -265,7 +265,7 @@ class BorutaClass(BaseEstimator, TransformerMixin):
     def get_tree_num(self, n_feat: int):
         assert isinstance(n_feat, int), \
             f'n_feat must be an integer. Now its type is {type(n_feat)}.'
-        assert n_feat > 1, f'n_feat must be a positive integer. Now its value is {n_feat}.'
+        assert n_feat >= 1, f'n_feat must be a positive integer. Now its value is {n_feat}.'
         depth = self.estimator.get_params()['max_depth']
         if depth is None:
             depth = 7
