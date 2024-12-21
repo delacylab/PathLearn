@@ -90,7 +90,11 @@ def classify_metrics(y_true: np.ndarray,
     n_classes = len(np.unique(y_true))
     assert n_classes > 1, \
         f"The number of classes for the true label must be greater than 1. Now it is {n_classes}"
-
+    assert n_classes_pred <= n_classes, \
+        (f"The number of classes for the true label (={n_classes}) must be greater or equal to the number of classes "
+         f"for the predicted label (={n_classes_pred}).")
+    if n_classes == 2:
+        average = 'binary'
     result = {}     # Storing the computed statistics
 
     # Metric 1: Accuracy
