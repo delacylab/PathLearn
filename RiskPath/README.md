@@ -35,12 +35,12 @@ _RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedica
 * Empowered by Pytorch and scikit-learn
   
 # :computer: Installation #
-**Using pip (available soon)**
+**Using pip (available on 24 December 2024)**
 ```
 $ pip install riskpath
 ```
 
-**Using conda (available soon)**
+**Using conda (available on 24 December 2024)**
 ```
 conda install riskpath
 ```
