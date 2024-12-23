@@ -1,4 +1,4 @@
-# RiskPath - A multistep predictive pipeline for temporally-sensitive biomedical risk stratification
+# RiskPath - Explainable deep learning for multistep biomedical prediction in longitudinal data
 
 <!-- Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0 -->
 <!-- Applying Apache 2.0: https://www.apache.org/legal/apply-license.html -->
