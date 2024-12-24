@@ -37,7 +37,7 @@ _RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedica
 # :computer: Installation #
 **Using gitclone and pip (availble now)** 
 ```
-$ git clone https://github.com/delacylab/PathLearn.git
+git clone https://github.com/delacylab/PathLearn.git
 cd PathLearn/RiskPath
 pip install .
 ```
