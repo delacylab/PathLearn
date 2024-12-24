@@ -20,9 +20,9 @@
 ########################################################################################################################
 import torch
 from DL.algo import TCN_Classifier
-from DL.plots import plot_SHAP_3D_movie
+from DL.plots import plot_AUROC, plot_SHAP_3D_movie
 from DL.riskpath import RPClassifier
-from Utils.simulators import sample_dataset_1
+from Utils.timeseries_simulators import sample_dataset_1
 
 ########################################################################################################################
 # Experiment on RiskPath with the optional procedures of feature selection and timestamp concatenation
@@ -40,9 +40,12 @@ RPC.evaluate(X_test, y_test)
 
 # Identify the parameter associated with the best AUROC in the test partition
 best_param = RPC.get_best_performance(partition='Test', metric='AUROC')['param']
+plot_AUROC(*RPC.get_TPR_FPR(best_param, 'Test'))
 
 # Compute the SHAP values evaluated by the best-AUROC model at the test partition
 shap = RPC.get_SHAP(param=best_param, X=X_test)
 
 # Create a 3D animation illustrating how SHAP values vary across timestamps
 plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10, filename='S4_RiskPath_Pipeline')
+
+########################################################################################################################

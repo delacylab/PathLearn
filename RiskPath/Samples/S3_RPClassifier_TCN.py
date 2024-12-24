@@ -25,8 +25,8 @@ from DL.plots import (plot_performance, plot_AUROC, plot_MASHAP_trend, plot_SHAP
                       plot_SHAP_feat_heatmap, plot_MASHAP_bar, plot_SHAP_3D_movie)
 from DL.riskpath import RPClassifier
 from sklearn.model_selection import train_test_split
-from Utils.log import create_log
-from Utils.simulators import make_ts_classification
+from Utils.logger import create_log
+from Utils.timeseries_simulators import make_ts_classification
 
 ########################################################################################################################
 # Experiment on RiskPath for binary classification

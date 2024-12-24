@@ -24,8 +24,8 @@ from DL.riskpath import RPClassifier
 from DL.plots import plot_AUROC, plot_SHAP_3D_movie
 from Preprocess.concatenate import TSConcatenate
 from Preprocess.feature_select import FSClassifier
-from Utils.log import create_log
-from Utils.simulators import sample_dataset_2
+from Utils.logger import create_log
+from Utils.timeseries_simulators import sample_dataset_2
 
 ########################################################################################################################
 # Experiment on RiskPath with the optional procedures of feature selection and timestamp concatenation
@@ -81,3 +81,5 @@ shap = RPC.get_SHAP(param=best_param, X=X_test_3D)
 
 # Create a 3D animation illustrating how SHAP values vary across timestamps
 plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10)
+
+########################################################################################################################
