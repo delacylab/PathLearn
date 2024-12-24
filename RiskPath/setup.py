@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name='riskpath',
     version='0.1.0',
-    packages=find_packages(),
+    packages=find_packages('RiskPath', 'RiskPath.*'),
     install_requires=[
         'numpy>=1.24.4',
         'matplotlib>=3.8.0',
