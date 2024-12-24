@@ -27,6 +27,7 @@ from typing import Literal, Union
 # Define the timestamp concatenating operation as a class
 ########################################################################################################################
 
+
 class TSConcatenate:
     """
     This class is designed to preprocess non-square datasets (in terms of irregular timestamps). Notice that a feature

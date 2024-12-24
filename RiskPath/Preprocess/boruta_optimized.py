@@ -418,21 +418,3 @@ class BorutaClass(BaseEstimator, TransformerMixin):
         return support_dict
 
 ########################################################################################################################
-# Example
-########################################################################################################################
-
-# if __name__ == '__main__':
-#     from sklearn.datasets import make_classification
-#     X, y = make_classification(n_samples=500, n_features=20, n_informative=10, random_state=42)
-#     B = BorutaClass(estimator=RandomForestClassifier(max_depth=7, n_jobs=-1),
-#                     max_iter=50,
-#                     perc=[100, 90],
-#                     alpha=[0.01, 0.05],
-#                     verbose=1)
-#     B.fit(X, y)
-#     support_dict = B.get_rlv_feat()
-#     print("\nBoruta results:")
-#     for config_idx, ((perc_value, alpha_value), subset) in enumerate(support_dict.items(), 1):
-#         print(f"Configuration {config_idx}; (perc={perc_value}, alpha={alpha_value}). Selected = {subset}", flush=True)
-
-########################################################################################################################

@@ -28,6 +28,7 @@ from typing import Literal, Optional, Union
 # Define feature selection class for classification
 ########################################################################################################################
 
+
 class FSClassifier(BaseEstimator, TransformerMixin):
     """
     A. Runtime parameters
@@ -216,6 +217,7 @@ class FSClassifier(BaseEstimator, TransformerMixin):
 ########################################################################################################################
 # Define feature selection class for regression
 ########################################################################################################################
+
 
 class FSRegressor(BaseEstimator, TransformerMixin):
     """
