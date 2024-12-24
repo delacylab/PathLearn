@@ -11,7 +11,7 @@ setup(
         'plotly>=5.19.0',
         "scikit-learn>=1.5.0",
         'seaborn>=0.12.2',
-        "torch==2.1.0",
+        "torch>=2.1.0",
         'torchvision>=0.16.0',
         'torchaudio>=2.1.0',
         'imbalanced-learn>=0.12.3',
@@ -31,9 +31,12 @@ setup(
                 'into the algorithm. RiskPath also provides data-driven approaches for streamlining features in '
                 'time-series data before and during model training and analyzing performance-complexity trade-offs '
                 'in model construction.',
-    url='https://github.com/delacylab/PathLearn/tree/main/RiskPath',
+    url='https://github.com/delacylab/PathLearn',
     classifiers=[
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
         'Development Status :: 4 - Beta',
