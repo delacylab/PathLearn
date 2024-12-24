@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='riskpath',
+    name='RiskPath',
     version='0.1.0',
     packages=find_packages('RiskPath', 'RiskPath.*'),
     install_requires=[
