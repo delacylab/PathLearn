@@ -29,6 +29,7 @@ from typing import Optional
 # Define a helper class to encapsulate the logging functionality
 ########################################################################################################################
 
+
 class ConsoleToLogger:
     # A helper class to
     def __init__(self, logger, level):
@@ -45,6 +46,7 @@ class ConsoleToLogger:
 ########################################################################################################################
 # Define the main function for the logging functionality
 ########################################################################################################################
+
 
 def create_log(filename: Optional[str] = None):
     """

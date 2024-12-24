@@ -21,15 +21,14 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import check_random_state
 from tslearn.generators import random_walks, random_walk_blobs
 from typing import Optional, Union
 
-
 ########################################################################################################################
 # Define a time-series data simulation function for classification
 ########################################################################################################################
+
 
 def make_ts_classification(n_samples_per_class: int,
                            n_timestamps: int,
@@ -119,6 +118,7 @@ def make_ts_classification(n_samples_per_class: int,
 # Define a time-series data simulation function for regression
 ########################################################################################################################
 
+
 def make_ts_regression(n_samples: int,
                        n_timestamps: int,
                        n_features: int,
@@ -191,6 +191,7 @@ def make_ts_regression(n_samples: int,
 # Define a sample synthetic time-series dataset for RiskPath tutorial
 ########################################################################################################################
 
+
 def sample_dataset_1():
     """
     Generate a synthetic time-series dataset for RiskPath tutorial.
@@ -226,6 +227,7 @@ def sample_dataset_1():
 ########################################################################################################################
 # Define a sample synthetic time-series dataset for RiskPath full tutorial
 ########################################################################################################################
+
 
 def sample_dataset_2():
     """
