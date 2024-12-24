@@ -35,21 +35,14 @@ _RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedica
 * Empowered by Pytorch and scikit-learn
   
 # :computer: Installation #
-**Using gitclone and pip (availble now)** 
+
+We provide a beta version of RiskPath for testing to ensure usability. After the paper's official acceptance, a release candidate (gamma version) will be available (through pip and/or conda installation). 
+
+**Using gitclone and pip (AVAILABLE NOW)** 
 ```
 git clone https://github.com/delacylab/PathLearn.git
 cd PathLearn/RiskPath
 pip install .
-```
-
-**Using pip alone (available soon)**
-```
-$ pip install riskpath
-```
-
-**Using conda alone (available soon)**
-```
-conda install riskpath
 ```
 
 # :page_with_curl: Sample Script #
