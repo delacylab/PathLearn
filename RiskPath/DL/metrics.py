@@ -33,6 +33,7 @@ from typing import Literal, Optional
 # Standard classification metrics (Accuracy, F1, Precision, Recall, Specificity)
 ########################################################################################################################
 
+
 def classify_metrics(y_true: np.ndarray,
                      y_pred: np.ndarray,
                      prefix: str = "",
@@ -88,6 +89,7 @@ def classify_metrics(y_true: np.ndarray,
     assert isinstance(return_cm, bool), \
         f'return_cm must be a boolean. Now its type is {type(return_cm)}.'
     n_classes = len(np.unique(y_true))
+    n_classes_pred = len(np.unique(y_pred))
     assert n_classes > 1, \
         f"The number of classes for the true label must be greater than 1. Now it is {n_classes}"
     assert n_classes_pred <= n_classes, \
@@ -137,11 +139,12 @@ def classify_metrics(y_true: np.ndarray,
 # Classification metric (with predicted probability measures): AUROC
 ########################################################################################################################
 
+
 def classify_AUROC(y_true: np.ndarray,
                    y_score: np.ndarray,
                    prefix: str = "",
                    average: Optional[Literal['micro', 'macro']] = 'micro',
-                   auroc_only: bool = True):
+                   auroc_only: str = True):
     """
     Compute AUROC (Area Under the Receiver Operating Characteristic curve), TPR (True Positive Rates), and FPR (False
     Positive Rates) by comparing the true labels and the predicted probability measures (NOT the predicted labels). In
@@ -232,6 +235,7 @@ def classify_AUROC(y_true: np.ndarray,
 # Classification metric (with predicted probability measures): AIC, BIC, and negative log-likelihood (NLL)
 ########################################################################################################################
 
+
 def classify_AIC_BIC(y_true: np.ndarray,
                      y_score: np.ndarray,
                      n_params: int,
@@ -303,6 +307,7 @@ def classify_AIC_BIC(y_true: np.ndarray,
 # Standard regression metrics (MAE, MAPE, MSE, R2, RMSE)
 ########################################################################################################################
 
+
 def regress_metrics(y_true: np.ndarray,
                     y_pred: np.ndarray,
                     prefix: str = ""):
@@ -351,6 +356,7 @@ def regress_metrics(y_true: np.ndarray,
 ########################################################################################################################
 # Regression metrics: AIC and BIC
 ########################################################################################################################
+
 
 def regress_AIC_BIC(y_true: np.ndarray,
                     y_pred: np.ndarray,

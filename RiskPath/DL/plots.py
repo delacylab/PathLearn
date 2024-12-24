@@ -37,6 +37,7 @@ plt.style.use('seaborn-v0_8-darkgrid')          # Consider 'ggplot' or 'Solarize
 # Define the plotting function for models' performance statistics
 ########################################################################################################################
 
+
 def plot_performance(df: pd.DataFrame,
                      var_column: str,
                      prefixes: list[str],
@@ -146,6 +147,7 @@ def plot_performance(df: pd.DataFrame,
 # Define the plotting function for a model's AUROC
 ########################################################################################################################
 
+
 def plot_AUROC(TPR: list[float],
                FPR: list[float],
                title: Optional[str] = None,
@@ -207,6 +209,7 @@ def plot_AUROC(TPR: list[float],
 # Define the plotting function for the trend curve of Mean-Absolute-SHAP values
 ########################################################################################################################
 
+
 def plot_MASHAP_trend(attributes: np.ndarray,
                       title: Optional[str] = None,
                       filename: Optional[str] = None):
@@ -267,6 +270,7 @@ def plot_MASHAP_trend(attributes: np.ndarray,
 # Define the plotting function for SHAP strip plots
 ########################################################################################################################
 
+
 def plot_SHAP_strip(attributes: np.ndarray,
                     X: np.ndarray,
                     feature_names: list[str],
@@ -317,7 +321,7 @@ def plot_SHAP_strip(attributes: np.ndarray,
         f'attributes must be 2-dimensional. Now its dimension is {len(attributes.shape)}.'
     try:
         X = np.array(X)
-    except:
+    except TypeError:
         TypeError(f'X must be, or convertible to be, a numpy array. Now its type is {type(X)}.')
     assert len(X.shape) == 2, \
         f'X must be either 2-dimensional. Now its dimension is {len(X.shape)}.'
@@ -414,6 +418,7 @@ def plot_SHAP_strip(attributes: np.ndarray,
 ########################################################################################################################
 # Define the plotting function for features' MASHAP trend over timestamps
 ########################################################################################################################
+
 
 def plot_MASHAP_feat_trend(attributes: np.ndarray,
                            feature_names: list[str],
@@ -589,6 +594,7 @@ def plot_SHAP_feat_heatmap(attributes: np.ndarray,
 # Define a plotting function for stacked SHAP bar chart
 ########################################################################################################################
 
+
 def plot_MASHAP_bar(attributes: list[np.ndarray],
                     feature_names: list[str],
                     top_n_features: Optional[int] = None,
@@ -613,9 +619,6 @@ def plot_MASHAP_bar(attributes: list[np.ndarray],
     :param stack: A boolean.
            Bars will be stacked for different classes. Only used when a single SHAP matrix in attributes.
            Default setting: stack=True
-    :param y_log: A boolean.
-           The y-axis for MA-SHAP values will be log-scaled if True.
-           Default setting: y_log=True
     :param title: A string or None.
            The title of the plot if a string is provided, and no title provided if None.
            Default setting: title=None
@@ -637,7 +640,7 @@ def plot_MASHAP_bar(attributes: list[np.ndarray],
     for idx in range(len(attributes)):
         try:
             attributes[idx] = np.array(attributes[idx])
-        except:
+        except TypeError:
             TypeError(f'attributes (or each element in attributes) must be (convertible to) a numpy array.')
         assert len(attributes[idx].shape) == 2, \
             f'attributes (or each element in attributes) must be 2-dimensional.'
@@ -730,7 +733,7 @@ def plot_SHAP_3D_movie(attributes: np.ndarray,
     :param title: A string or None.
            The title of the plot if a string is provided, and no title provided if None.
            Default setting title=None
-    :param filename: A string or None. If not None, a .png file and a HTML file with the specified filename will be
+    :param filename: A string or None. If not None, a .png file and an HTML file with the specified filename will be
            created to the current working directory.
            Default setting: filename=None
     :return:

@@ -33,6 +33,7 @@ LossFunction = Callable[[torch.Tensor, torch.Tensor], torch.Tensor]
 # Define the early stopping class
 ########################################################################################################################
 
+
 class EarlyStopping:
     """
     Early stopping technique used during model training to speed up runtime and prevent over-fitting.
@@ -102,6 +103,7 @@ class EarlyStopping:
 # Define a superclass (inherited from torch.nn.Module) for various model classes (e.g., ANN, LSTM, Transformer, TCN)
 ########################################################################################################################
 
+
 class DL_Class(nn.Module):
     """
     A superclass for various model classes that will be used in this module.
@@ -142,6 +144,7 @@ class DL_Class(nn.Module):
 ########################################################################################################################
 # Define an ANN model class for classification
 ########################################################################################################################
+
 
 class ANN_Classifier(DL_Class):
     """
@@ -240,6 +243,7 @@ class ANN_Classifier(DL_Class):
 # Define an ANN model class for regression tasks
 ########################################################################################################################
 
+
 class ANN_Regressor(DL_Class):
     """
     A PyTorch ANN class for regression.
@@ -324,6 +328,7 @@ class ANN_Regressor(DL_Class):
 # https://medium.com/@reddyyashu20/bidirectional-rnn-python-code-in-keras-and-pytorch-22b9a9a3c034
 # https://github.com/aladdinpersson/Machine-Learning-Collection/blob/master/ML/Pytorch/Basics/pytorch_bidirectional_lstm.py
 ########################################################################################################################
+
 
 class LSTM_Classifier(DL_Class):
     """
@@ -441,6 +446,7 @@ class LSTM_Classifier(DL_Class):
 # https://github.com/aladdinpersson/Machine-Learning-Collection/blob/master/ML/Pytorch/Basics/pytorch_bidirectional_lstm.py
 ########################################################################################################################
 
+
 class LSTM_Regressor(DL_Class):
     """
      A PyTorch LSTM class for regression.
@@ -542,6 +548,7 @@ class LSTM_Regressor(DL_Class):
 # References
 # https://aravindkolli.medium.com/mastering-tabular-data-with-tabtransformer-a-comprehensive-guide-119f6dbf5a79
 ########################################################################################################################
+
 
 class Transformer_Classifier(DL_Class):
     """
@@ -680,6 +687,7 @@ class Transformer_Classifier(DL_Class):
 # https://aravindkolli.medium.com/mastering-tabular-data-with-tabtransformer-a-comprehensive-guide-119f6dbf5a79
 ########################################################################################################################
 
+
 class Transformer_Regressor(DL_Class):
     """
     A PyTorch Transformer class for regression.
@@ -808,6 +816,7 @@ class Transformer_Regressor(DL_Class):
 # https://github.com/locuslab/TCN/blob/master/TCN/tcn.py
 ########################################################################################################################
 
+
 class TemporalBlock(nn.Module):
     """
     A PyTorch temporal block class for one layer in a TCN model.
@@ -878,6 +887,7 @@ class TemporalBlock(nn.Module):
 # References
 # https://github.com/locuslab/TCN/blob/master/TCN/tcn.py
 ########################################################################################################################
+
 
 class TCN_Classifier(DL_Class):
     """
@@ -986,6 +996,7 @@ class TCN_Classifier(DL_Class):
 # https://github.com/locuslab/TCN/blob/master/TCN/tcn.py
 ########################################################################################################################
 
+
 class TCN_Regressor(DL_Class):
     """
     A PyTorch TCN class for regression.
@@ -1080,6 +1091,7 @@ class TCN_Regressor(DL_Class):
 ########################################################################################################################
 # Define the function to train a model
 ########################################################################################################################
+
 
 def train_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor,
                              Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor],
@@ -1217,6 +1229,7 @@ def train_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LST
 
 ########################################################################################################################
 
+
 def test_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor,
                             Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor],
                X: torch.Tensor,
@@ -1272,14 +1285,16 @@ def test_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM
         f"return_pred must be a boolean. Now its type is {type(return_pred)}."
 
     with torch.no_grad():
+        start = time()
         y_pred = model(X)
         try:
             test_loss = criterion(y_pred, y)
         except RuntimeError:
             test_loss = criterion(y_pred, y.long())        # CrossEntropyLoss and NLLLoss require LongTensor
+        end = time()
     if return_pred:
-        return {f'{prefix}loss': test_loss.item()}, y_pred
+        return {f'{prefix}loss': test_loss.item(), f'{prefix}time': end-start}, y_pred
     else:
-        return {f'{prefix}loss': test_loss.item()}
+        return {f'{prefix}loss': test_loss.item(), f'{prefix}time': end-start}
 
 ########################################################################################################################
