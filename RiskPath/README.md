@@ -12,7 +12,7 @@
 <!-- van der Schaar's autoprognosis: https://github.com/vanderschaarlab/autoprognosis -->
 
 [![tutorial_badge](https://img.shields.io/badge/Tutorial-RiskPath-green)](https://colab.research.google.com/drive/1S8rkrQi39-OUuc0hVasiNjMCGeadKum0?usp=sharing)
-[![medRxiv_badge](https://img.shields.io/badge/medRxiv-2024.09.19.24313909-blue)](https://www.medrxiv.org/content/10.1101/2024.09.19.24313909v1)
+[![medRxiv_badge](https://img.shields.io/badge/medRxiv-2024.09.19.24313909-blue)](https://www.medrxiv.org/content/10.1101/2024.09.19.24313909v2)
 [![PubMed_badge](https://img.shields.io/badge/PubMed-PMC11451668-blue)](https://pmc.ncbi.nlm.nih.gov/articles/PMC11451668/)
 [![license_badge](https://img.shields.io/badge/License-Apache_2.0-8A2BE2)](https://www.apache.org/licenses/LICENSE-2.0)
 ![Repo DOI badge](https://img.shields.io/badge/Repo_DOI-TBD-8A2BE2)
@@ -23,7 +23,7 @@
 
 # :crystal_ball: Abstract #
 
-_RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedical risk stratification that achieves solid performance and is tailored to the constraints and demands of biomedical practice. The core algorithm is a Long-Short-Term-Memory network (LSTM, Hochreiter & Schmidhuber 1997), a Transformer network (Vaswani et al. 2017), or a Temporal Convolutional Network (Bai et al. 2018) adapted to data with the characteristics common in clinical practice (tabular; non-square; collected annually; ≤10 timestamps) and rendered translationally explainable by extending the Shapley method of computing feature importances (Lundberg & Lee 2017) for time-series data and embedding this into the algorithm. RiskPath also provides data-driven approaches for streamlining features in time-series data before and during model training and analyzing performance-complexity trade-offs in model construction.
+_RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedical risk stratification that achieves solid performance and is tailored to the constraints and demands of biomedical practice. The core algorithm is a Long-Short-Term-Memory network (LSTM, Hochreiter & Schmidhuber 1997), a Transformer network (Vaswani et al. 2017), or a Temporal Convolutional Network (Bai et al. 2018) adapted to data with the characteristics common in clinical practice (tabular; incomplete; collected annually; ≤10 timestamps) and rendered translationally explainable by extending the Shapley method of computing feature importances (Lundberg & Lee 2017) for time-series data and embedding this into the algorithm. RiskPath also provides data-driven approaches for streamlining features in time-series data before and during model training and analyzing performance-complexity trade-offs in model construction.
 
 # :paperclip: Characteristics # 
 * Multistep time-series prediction
@@ -77,7 +77,8 @@ plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10)
 
 See [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1yBqKy2ZnF3Aq8QnBMAU03xyUCJTZu8Cr?usp=sharing) for a detailed tutorial on our other visualization tools for performance statistics and SHAP values. 
 
-![RiskPath_Visualization_Grey](https://github.com/user-attachments/assets/c300ff3a-d534-433f-a9f6-dc8098fd2605)
+![RiskPath_Visualization_Grid](https://github.com/user-attachments/assets/3e4f0c4e-f566-4f4c-aead-34dc4fd9331a)
+
 
 # :speech_balloon: Script Description #
 
@@ -109,7 +110,7 @@ Please cite the associated paper when using our code.
 
 ```
 @article{de Lacy2024.09.19.24313909,
-	 author = {de Lacy, Nina and Lam, Wai Yin and Ramshaw, Michael},
+         author = {de Lacy, Nina and Ramshaw, Michael and Lam, Wai Yin},
          title = {RiskPath: Explainable deep learning for multistep biomedical prediction in longitudinal data},
 	 elocation-id = {2024.09.19.24313909},
          year = {2024},
