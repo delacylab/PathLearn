@@ -19,13 +19,13 @@
 # Import packages
 ########################################################################################################################
 import torch.nn
-from DL.algo import Transformer_Classifier, EarlyStopping
-from DL.riskpath import RP_Classifier
-from sklearn.model_selection import train_test_split
-from Utils.logger import create_log
-from Utils.plots import (plot_performance, plot_AUROC, plot_mean_predictor_importance, plot_predictor_path,
+from ..DL.algo import Transformer_Classifier, EarlyStopping
+from ..DL.riskpath import RP_Classifier
+from ..Utils.logger import create_log
+from ..Utils.plots import (plot_performance, plot_AUROC, plot_mean_predictor_importance, plot_predictor_path,
                          plot_epoch_importance, plot_shap_bar, plot_shap_beeswarm, plot_shap_heatmap, plot_shap_movie)
-from Utils.timeseries_simulators import make_ts_classification
+from ..Utils.timeseries_simulators import make_ts_classification
+from sklearn.model_selection import train_test_split
 
 ########################################################################################################################
 # Experiment on RiskPath for binary classification
