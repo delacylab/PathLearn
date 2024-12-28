@@ -19,13 +19,13 @@
 # Import packages
 ########################################################################################################################
 import torch
-from DL.algo import Transformer_Classifier
-from DL.riskpath import RP_Classifier
-from Preprocess.padding import PaddingConcatenate
-from Preprocess.feature_select import FS_Classifier
-from Utils.logger import create_log
-from Utils.plots import plot_AUROC, plot_shap_movie
-from Utils.timeseries_simulators import sample_dataset_2
+from ..DL.algo import Transformer_Classifier
+from ..DL.riskpath import RP_Classifier
+from ..Preprocess.padding import PaddingConcatenate
+from ..Preprocess.feature_select import FS_Classifier
+from ..Utils.logger import create_log
+from ..Utils.plots import plot_AUROC, plot_shap_movie
+from ..Utils.timeseries_simulators import sample_dataset_2
 
 ########################################################################################################################
 # Experiment on RiskPath with the optional procedures of feature selection and timestamp concatenation
