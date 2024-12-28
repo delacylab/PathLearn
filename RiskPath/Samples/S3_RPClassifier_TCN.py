@@ -18,14 +18,13 @@
 ########################################################################################################################
 # Import packages
 ########################################################################################################################
-import numpy as np
 import torch.nn
 from DL.algo import TCN_Classifier, EarlyStopping
-from DL.plots import (plot_performance, plot_AUROC, plot_MASHAP_trend, plot_SHAP_strip, plot_MASHAP_feat_trend,
-                      plot_SHAP_feat_heatmap, plot_MASHAP_bar, plot_SHAP_3D_movie)
-from DL.riskpath import RPClassifier
+from DL.riskpath import RP_Classifier
 from sklearn.model_selection import train_test_split
 from Utils.logger import create_log
+from Utils.plots import (plot_performance, plot_AUROC, plot_mean_predictor_importance, plot_predictor_path,
+                         plot_epoch_importance, plot_shap_bar, plot_shap_beeswarm, plot_shap_heatmap, plot_shap_movie)
 from Utils.timeseries_simulators import make_ts_classification
 
 ########################################################################################################################
@@ -33,8 +32,7 @@ from Utils.timeseries_simulators import make_ts_classification
 ########################################################################################################################
 
 # Create logging file
-filename = __file__.split('.py')[0].split('/')[-1]
-create_log(filename)
+create_log(__file__.split('.py')[0])
 
 # Simulate the dataset
 X, y = make_ts_classification(n_samples_per_class=500,
@@ -48,10 +46,8 @@ feature_names = [f'X_{i + 1}' for i in range(X.shape[2])]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
 
 # Create a RiskPath model (with an TCN base model)
-RPC = RPClassifier(base_model=TCN_Classifier,
-                   param_grid=[100, 200, 300],
-                   n_layers=2,
-                   kernel_size=3)
+RPC = RP_Classifier(base_model=TCN_Classifier,
+                    param_grid=[100, 200, 300, 400])
 
 # Fit the RiskPath model
 RPC.fit(X_train, y_train,
@@ -60,53 +56,50 @@ RPC.fit(X_train, y_train,
         criterion=torch.nn.BCELoss(),
         optimizer=torch.optim.SGD,
         earlyStopper=EarlyStopping(patience=5),
-        verbose_epoch=10,
         val_metric='AUROC',
         lr=0.005)
 
 # Evaluate the RiskPath model
 RPC.evaluate(X_test, y_test)
 
-# Get overall performance statistics and plot
+# Obtain and plot overall performance statistics by accuracy
 df = RPC.get_performance()
-plot_performance(df=df,
-                 var_column='param',
-                 prefixes=['Train', 'Val', 'Test'],
-                 metric='AUROC',
-                 sep='_',
-                 title=None,
-                 filename=None,
-                 rename_dict={'param': 'Dimension of embedding vector', 'Train': 'Training', 'Val': 'Validation'})
+plot_performance(df=df, rename_dict={'param': 'Width of models', 'Train': 'Training'})
 
 # Identify the best (test) AUROC model
 best_model_stat = RPC.get_best_performance(partition='Test', metric='AUROC')
-best_n_units = best_model_stat['param']
+best_param = best_model_stat['param']
 
-# Plot AUROC curve
-TPR, FPR = RPC.get_TPR_FPR(best_n_units, 'Test')
+# Obtain and plot AUROC
+TPR, FPR = RPC.get_TPR_FPR(best_param, 'Test')
 plot_AUROC(TPR, FPR)
 
-# Get SHAP values and mean-absolute SHAP across timestamps
-attr = RPC.get_SHAP(param=best_n_units, X=X_test)
-attr_tsMA = np.mean(np.abs(attr), axis=1)
+# Obtain and plot mean predictor importance (= mean-absolute SHAP across samples & time epochs)
+mpi = RPC.get_SHAP(param=best_param, X=X_test, average='Sample_Epoch')
+plot_mean_predictor_importance(mpi)
 
-# Show the SHAP trend plot (with SHAP values averaged over timestamps first)
-plot_MASHAP_trend(attr_tsMA)
+# Obtain and plot predictor path (= mean-absolute SHAP across samples)
+pp = RPC.get_SHAP(param=best_param, X=X_test, average='Sample')
+plot_predictor_path(pp, feature_names, top_n_features=20, y_log=False)
 
-# Show SHAP strip plot in the last timestamp
-plot_SHAP_strip(attr[:, -1, :], X_test[:, -1, :], feature_names,
-                top_n_features=20, max_points=200, random_state=42)
+# Obtain and plot epoch importance (=mean-absolute SHAP across samples and features)
+ei = RPC.get_SHAP(param=best_param, X=X_test, average='Sample_Feature')
+plot_epoch_importance(ei)
 
-# Show features' MA-SHAP trend curve
-plot_MASHAP_feat_trend(attr, feature_names, top_n_features=20, y_log=False)
+# Obtain and plot mean predictor importance in the last epoch
+mpi = RPC.get_SHAP(param=best_param, X=X_test, average='Sample')
+mpi = mpi[-1, :]
+plot_shap_bar(mpi, feature_names=feature_names)
 
-# Show a feature's SHAP heatmap
-plot_SHAP_feat_heatmap(attr, feature_idx=0, scale_intensity=True)
+# Obtain the SHAP values in the last epoch and show its beeswarm/strip plot
+shap = RPC.get_SHAP(param=best_param, X=X_test)
+shap_last, X_test_last = shap[:, -1, :], X_test[:, -1, :]
+plot_shap_beeswarm(shap_last, X_test_last, feature_names)
 
-# Show a stacked SHAP bar chat
-plot_MASHAP_bar(attr_tsMA, feature_names, top_n_features=20, stack=True)
+# Obtain the SHAP values of a specific feature and show its heatmap
+plot_shap_heatmap(shap, 0, True)
 
 # Show 3D animation
-plot_SHAP_3D_movie(attr, feature_names=feature_names, top_n_features=20, filename=f"{filename}_3D")
+plot_shap_movie(shap, feature_names=feature_names, top_n_features=20)
 
-########################################################################################################################
+#######################################################################################################################

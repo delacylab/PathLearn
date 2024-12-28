@@ -18,32 +18,31 @@
 ########################################################################################################################
 # Import packages
 ########################################################################################################################
-import torch
-from DL.algo import TCN_Classifier
-from DL.riskpath import RP_Classifier
-from Utils.plots import plot_AUROC, plot_shap_movie
-from Utils.timeseries_simulators import sample_dataset_1
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from Utils.plots import plot_AUROC
+from Utils.timeseries_simulators import make_ts_classification
+from Utils.wavelet_transform import extract_wavelet
+from Utils.benchmarking import Benchmark_Classifier
 
 ########################################################################################################################
-# Experiment on RiskPath
+# Experiment on RiskPath for binary classification
 ########################################################################################################################
 
-# Create a partitioned sample dataset
-X_train, X_test, y_train, y_test, feature_names = sample_dataset_1()
+# Simulate the dataset
+X, y = make_ts_classification(n_samples_per_class=500,
+                              n_timestamps=10,
+                              n_features=30,
+                              n_informative=10,
+                              n_classes=2,
+                              noise_level=10,
+                              random_state=42)
+feature_names = [f'X_{i + 1}' for i in range(X.shape[2])]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
+X_train, X_test = extract_wavelet(X_train), extract_wavelet(X_test)
 
-# Create, fit, and evaluate a RiskPath model (with an TCN base model)
-RPC = RP_Classifier(base_model=TCN_Classifier, param_grid=[16, 32, 64])
-RPC.fit(X_train, y_train, criterion=torch.nn.BCELoss(), optimizer=torch.optim.AdamW)
-RPC.evaluate(X_test, y_test)
-
-# Identify the parameter associated with the best AUROC in the test partition
-best_param = RPC.get_best_performance(partition='Test', metric='AUROC')['param']
-plot_AUROC(*RPC.get_TPR_FPR(best_param, 'Test'))
-
-# Compute the SHAP values evaluated by the best-AUROC model at the test partition
-shap = RPC.get_SHAP(param=best_param, X=X_test)
-
-# Create a 3D animation illustrating how SHAP values vary across timestamps
-plot_shap_movie(shap, feature_names=feature_names, top_n_features=10)
-
-########################################################################################################################
+# Create a Benchmarking model (with an SVM base model)
+M = Benchmark_Classifier(base_model=SVC(probability=True, random_state=42))
+M.fit(X_train, y_train)
+M.evaluate(X_test, y_test)
+plot_AUROC(*M.TFPR_dict['Test'])
