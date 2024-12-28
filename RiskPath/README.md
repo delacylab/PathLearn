@@ -67,7 +67,7 @@ best_param = RPC.get_best_performance(partition='Test', metric='AUROC')['param']
 shap = RPC.get_SHAP(param=best_param, X=x_test)
 
 # Create a 3D animation illustrating how SHAP values vary across timestamps
-plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10)
+plot_shap_movie(shap, feature_names=feature_names, top_n_features=10)
 ```
 
 <p align="center">
