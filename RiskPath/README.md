@@ -48,10 +48,10 @@ pip install .
 # :page_with_curl: Sample Script #
 ```python
 import torch
-from riskPath.DL.dl_base import TCN_Classifier
-from riskPath.DL.plots import plot_SHAP_3D_movie
-from riskPath.DL.riskpath import RPClassifier
-from riskPath.Utils.simulators import sample_dataset_1
+from PathLearn.RiskPath.DL.algo import TCN_Classifier
+from PathLearn.RiskPath.DL.riskpath import RP_Classifier
+from PathLearn.RiskPath.Utils.plots import plot_shap_movie
+from PathLearn.RiskPath.Utils.timeseries_simulators import sample_dataset_1
 
 # Create a partitioned sample dataset
 x_train, x_test, y_train, y_test, feature_names = sample_dataset_1()
