@@ -19,10 +19,10 @@
 # Import packages
 ########################################################################################################################
 import torch
-from DL.algo import TCN_Classifier
-from DL.riskpath import RP_Classifier
-from Utils.plots import plot_AUROC, plot_shap_movie
-from Utils.timeseries_simulators import sample_dataset_1
+from ..DL.algo import TCN_Classifier
+from ..DL.riskpath import RP_Classifier
+from ..Utils.plots import plot_AUROC, plot_shap_movie
+from ..Utils.timeseries_simulators import sample_dataset_1
 
 ########################################################################################################################
 # Experiment on RiskPath
