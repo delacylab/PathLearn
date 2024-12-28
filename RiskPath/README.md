@@ -41,8 +41,7 @@ We provide a beta version of RiskPath for testing to ensure usability. After the
 **Using gitclone and pip (AVAILABLE NOW)** 
 ```
 git clone https://github.com/delacylab/PathLearn.git
-cd PathLearn/RiskPath
-pip install .
+pip install PathLearn/RiskPath
 ```
 
 # :page_with_curl: Sample Script #
