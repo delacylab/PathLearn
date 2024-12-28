@@ -57,7 +57,7 @@ from PathLearn.RiskPath.Utils.timeseries_simulators import sample_dataset_1
 x_train, x_test, y_train, y_test, feature_names = sample_dataset_1()
 
 # Create, fit, and evaluate a RiskPath model (embedded with Temporal Convolutional Networks)
-RPC = RPClassifier(base_model=TCN_Classifier, param_grid=[16, 32, 64])
+RPC = RP_Classifier(base_model=TCN_Classifier, param_grid=[16, 32, 64])
 RPC.fit(x_train, y_train, criterion=torch.nn.BCELoss(), optimizer=torch.optim.AdamW)
 RPC.evaluate(x_test, y_test)
 
