@@ -74,7 +74,7 @@ class EarlyStopping:
         self.patience = patience
         try:
             min_delta = float(min_delta)
-        except:
+        except TypeError:
             raise TypeError(f"min_delta must be a float. Now its type is {type(min_delta)}.")
         assert min_delta >= 0, \
             f"min_delta must be a non-negative float. Now it is {min_delta}."
@@ -89,7 +89,7 @@ class EarlyStopping:
     def early_stop(self, loss: float):
         try:
             loss = float(loss)
-        except:
+        except TypeError:
             raise TypeError(f"loss must be a float. Now its type is {type(loss)}.")
         if loss < self.min_loss:
             self.min_loss, self.counter = loss, 0
@@ -220,7 +220,7 @@ class ANN_Classifier(DL_Class):
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 2, \
             f'X must be 2-dimensional. Now it is {len(X.shape)}-dimensional.'
@@ -305,7 +305,7 @@ class ANN_Regressor(DL_Class):
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 2, \
             f'X must be 2-dimensional. Now it is {len(X.shape)}-dimensional.'
@@ -411,7 +411,7 @@ class LSTM_Classifier(DL_Class):
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
             f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
@@ -434,9 +434,9 @@ class LSTM_Classifier(DL_Class):
             if 'weight_ih' in name:
                 torch.nn.init.xavier_uniform_(param.data)
             elif 'weight_hh' in name:
-              torch.nn.init.orthogonal_(param.data)
+                torch.nn.init.orthogonal_(param.data)
             elif 'bias' in name:
-              param.data.fill_(0)
+                param.data.fill_(0)
 
 ########################################################################################################################
 # Define an LSTM model class for regression tasks
@@ -518,7 +518,7 @@ class LSTM_Regressor(DL_Class):
     def forward(self, X: Union[np.ndarray, torch.Tensor]):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
             f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
@@ -539,9 +539,9 @@ class LSTM_Regressor(DL_Class):
             if 'weight_ih' in name:
                 torch.nn.init.xavier_uniform_(param.data)
             elif 'weight_hh' in name:
-              torch.nn.init.orthogonal_(param.data)
+                torch.nn.init.orthogonal_(param.data)
             elif 'bias' in name:
-              param.data.fill_(0)
+                param.data.fill_(0)
 
 ########################################################################################################################
 # Define a Transformer model class for classification
@@ -657,18 +657,19 @@ class Transformer_Classifier(DL_Class):
     def forward(self, X):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
             f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
         device = self.get_device()
         X = X.to(device)
-        X = self.embedding(X)            # Step 1: Project the features to a {d_model}-dimensional embedding vector space
+        X = self.embedding(X)            # Step 1: Project each feature to a {d_model}-dimensional embedding vector
         X += self.positional_encoding    # Step 2: Add the relative positions of timestamps as a sequence of parameters
         X = self.transformer_encoder(X)  # Step 3: Run the encoder in a transformer
         X = X.mean(dim=1)                # Step 4: Global averaging pooling layer
         X = self.fc(X)                   # Step 5: Fully connected layer right before classification
-        y = torch.reshape(torch.sigmoid(X), shape=(-1,)) if self.n_classes == 2 else torch.nn.functional.softmax(X, dim=1)
+        y = torch.reshape(torch.sigmoid(X), shape=(-1,)) if self.n_classes == 2 \
+            else torch.nn.functional.softmax(X, dim=1)
         return y                         # Step 6: Output layer for classification
 
     def init_Xavier_weights(self):
@@ -781,19 +782,19 @@ class Transformer_Regressor(DL_Class):
         self.transformer_encoder = nn.TransformerEncoder(
             nn.TransformerEncoderLayer(d_model=d_model, nhead=n_heads, dim_feedforward=n_units, batch_first=True),
             num_layers=n_layers)
-        self.fc = nn.Linear(d_model,1)
+        self.fc = nn.Linear(d_model, 1)
 
     def forward(self, X):
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
             f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
         device = self.get_device()
         X = X.to(device)
 
-        X = self.embedding(X)            # Step 1: Project the features to a {d_model}-dimensional embedding vector space
+        X = self.embedding(X)            # Step 1: Project each feature to a {d_model}-dimensional embedding vector
         X += self.positional_encoding    # Step 2: Add the relative positions of timestamps as a sequence of parameters
         X = self.transformer_encoder(X)  # Step 3: Run the encoder in a transformer
         X = X.mean(dim=1)                # Step 4: Global averaging pooling layer
@@ -938,7 +939,7 @@ class TCN_Classifier(DL_Class):
 
         # Type and value check
         for arg, arg_name in zip([n_feat, n_units, n_layers, kernel_size],
-                               ['n_feat', 'n_units', 'n_layers', 'kernel_size']):
+                                 ['n_feat', 'n_units', 'n_layers', 'kernel_size']):
             assert isinstance(arg, int), \
                 f'{arg} must be a positive integer. Now its type is {type(arg)}.'
             assert arg >= 1, \
@@ -969,26 +970,26 @@ class TCN_Classifier(DL_Class):
 
     def forward(self, X):
         try:
-          X = torch.Tensor(X)
-        except:
-          raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
+            X = torch.Tensor(X)
+        except TypeError:
+            raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
-          f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
+            f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
         device = self.get_device()
         X = X.to(device)
         X = X.permute(0, 2, 1)    # batch-first approach
         X = self.model(X)
         result = self.fc(X[:, :, -1])   # Output from the last timestamp
         result_prob = torch.sigmoid(result).squeeze(-1) if self.n_classes == 2 \
-          else torch.nn.functional.softmax(result, dim=1)  # sigmoid (softmax) for binary (multiclass) classification
+            else torch.nn.functional.softmax(result, dim=1)  # sigmoid (softmax) for binary (multiclass) classification
         return result_prob
 
     def init_Xavier_weights(self):
         for name, param in self.named_parameters():
             if 'weight' in name and param.dim() > 1:
-             torch.nn.init.xavier_uniform_(param.data)
+                torch.nn.init.xavier_uniform_(param.data)
             elif 'bias' in name:
-              param.data.fill_(0)
+                param.data.fill_(0)
 
 ########################################################################################################################
 # Define a Temporal Convolutional Network (TCN) model class for classification
@@ -1035,15 +1036,15 @@ class TCN_Regressor(DL_Class):
     """
 
     def __init__(self,
-               n_feat: int,
-               n_units: int,
-               n_layers: int = 2,
-               kernel_size: int = 3):
+                 n_feat: int,
+                 n_units: int,
+                 n_layers: int = 2,
+                 kernel_size: int = 3):
         super().__init__()
 
         # Type and value check
         for arg, arg_name in zip([n_feat, n_units, n_layers, kernel_size],
-                               ['n_feat', 'n_units', 'n_layers', 'kernel_size']):
+                                 ['n_feat', 'n_units', 'n_layers', 'kernel_size']):
             assert isinstance(arg, int), \
                 f'{arg} must be a positive integer. Now its type is {type(arg)}.'
             assert arg >= 1, \
@@ -1069,11 +1070,11 @@ class TCN_Regressor(DL_Class):
 
     def forward(self, X):
         try:
-          X = torch.Tensor(X)
-        except:
-          raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
+            X = torch.Tensor(X)
+        except TypeError:
+            raise TypeError(f'X must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert len(X.shape) == 3, \
-          f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
+            f'X must be 3-dimensional. Now it is {len(X.shape)}-dimensional.'
         device = self.get_device()
         X = X.to(device)
         X = X.permute(0, 2, 1)    # batch-first approach
@@ -1084,9 +1085,9 @@ class TCN_Regressor(DL_Class):
     def init_Xavier_weights(self):
         for name, param in self.named_parameters():
             if 'weight' in name and param.dim() > 1:
-             torch.nn.init.xavier_uniform_(param.data)
+                torch.nn.init.xavier_uniform_(param.data)
             elif 'bias' in name:
-              param.data.fill_(0)
+                param.data.fill_(0)
 
 ########################################################################################################################
 # Define the function to train a model
@@ -1147,23 +1148,24 @@ def train_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LST
     assert type(model) in [ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor,
                            Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor], \
         (f'model must be an object from [ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor, '
-         f'Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor]. Now its type is {type(model)}.')
+         f'Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor]. '
+         f'Now its type is {type(model)}.')
     device = model.get_device()
     try:
         X_train = torch.Tensor(X_train).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'X_train must be (convertible to) a torch.tensor. Now its type is {type(X_train)}.')
     try:
         y_train = torch.Tensor(y_train).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'y_train must be (convertible to) a torch.tensor. Now its type is {type(y_train)}.')
     try:
         X_val = torch.Tensor(X_val).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'X_val must be (convertible to) a torch.tensor. Now its type is {type(X_val)}.')
     try:
         y_val = torch.Tensor(y_val).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'y_val must be (convertible to) a torch.tensor. Now its type is {type(y_val)}.')
     assert len(X_train.shape) in [2, 3], \
         f'X_train must be two- or three-dimensional. Now its dimension is {X_train.shape}'
@@ -1264,16 +1266,17 @@ def test_model(model: Union[ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM
     assert type(model) in [ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor,
                            Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor], \
         (f'model must be an object from [ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor, '
-         f'Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor]. Now its type is {type(model)}.')
+         f'Transformer_Classifier, Transformer_Regressor, TCN_Classifier, TCN_Regressor]. '
+         f'Now its type is {type(model)}.')
     model.eval()
     device = model.get_device()
     try:
         X = torch.Tensor(X).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'X must be (convertible to) a torch.tensor. Now its type is {type(X)}.')
     try:
         y = torch.Tensor(y).to(device)
-    except:
+    except TypeError:
         raise TypeError(f'y must be (convertible to) a torch.tensor. Now its type is {type(y)}.')
     assert len(X.shape) in [2, 3], \
         f'X must be two- or three-dimensional. Now its dimension is {X.shape}'

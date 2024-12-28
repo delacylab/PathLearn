@@ -25,18 +25,19 @@ import warnings
 from .algo import (ANN_Classifier, ANN_Regressor, LSTM_Classifier, LSTM_Regressor, Transformer_Classifier,
                    Transformer_Regressor, TCN_Classifier, TCN_Regressor, train_model, test_model,
                    LossFunction, EarlyStopping)
-from .metrics import classify_metrics, classify_AUROC, classify_AIC_BIC, regress_metrics, regress_AIC_BIC
 from captum.attr import GradientShap
 from functools import partial
 from sklearn.model_selection import KFold, StratifiedKFold
+from time import time
 from typing import Union, Literal, Optional
+from Utils.metrics import classify_metrics, classify_AUROC, classify_AIC_BIC, regress_metrics, regress_AIC_BIC
 
 ########################################################################################################################
 # Define a RiskPath model class for classification
 ########################################################################################################################
 
 
-class RPClassifier:
+class RP_Classifier:
     """
     A PyTorch RiskPath class for classification.
 
@@ -51,6 +52,7 @@ class RPClassifier:
         LSTM_Classifier: n_units
         Transformer_Classifier: d_model
         TCN_Classifier: n_units
+        Default setting: param_grid=list(range(8, 120, 8)) + list(range(120, 1201, 40))
     A3. verbose: An integer in [0, 1].
         Verbosity. No logging if 0, and information about the grid search over A2 will be displayed if 1.
         Default setting: verbose=1
@@ -115,13 +117,16 @@ class RPClassifier:
                Default setting: random_state=None
         :param kwargs: (Any extra runtime parameters of optimizer)
                Example: lr=0.001 for the learning rate parameter of the optimizer.
-    C2. evaluate(X, y):
+    C2. evaluate(X, y, prefix):
         Evaluate the models fitted in C2 with the feature set X and the target y.
         :param X: A 2- or 3-dimensional numpy array (or Torch.Tensor).
                Samples of the feature set with dimension as (sample size, number of features) or (sample size,
                number of timestamps, number of features).
         :param y: A 1-dimensional numpy array (or Torch.Tensor).
                Samples of the target with dimension as (sample size,).
+        :param prefix: A string.
+               The prefix used in the string for each performance metric.
+               Default setting: prefix='Test'
     C3. get_performance()
         Obtain a pandas.DataFrame summarizing the performance statistics of each fitted (and evaluated) model.
         :return: A Pandas DataFrame with rows as models and columns as evaluation metrics.
@@ -153,17 +158,24 @@ class RPClassifier:
         :return:
         (a) A list of true positive rates.
         (b) A list of false positive rates.
-    C8. get_SHAP(param, X)
+    C8. get_SHAP(param, X, average)
         Compute the SHAP values (for each class) by explaining X with the model identified by param (where the
         explanation baseline is the dataset used to train the model).
         :param param: A positive integer in the param_grid in A2.
         :param X: A 2- or 3-dimensional numpy array (or Torch.Tensor).
                Samples of the feature set with dimension as (sample size, number of features) or (sample size,
                number of timestamps, number of features).
+        :param average: A string or None.
+               The averaging technique used on the raw SHAP values. Its values can be chosen from below:
+               'Sample': The mean-absolute SHAP values, averaged across samples.
+               'Epoch': The mean-absolute SHAP values, averaged across time epochs.
+               'Feature': The mean-absolute SHAP values, averaged across features.
+               'Sample_Epoch': The mean-absolute SHAP values, averaged across samples and time epochs.
+               'Sample_Feature': The mean-absolute SHAP values, averaged across samples and features.
+               Default setting: average=None
         :return:
-        When n_classes (in B6) is 2, return a 2- or 3-dimensional numpy array of SHAP values (depending on the
-        dimension of X) When n_classes > 2, return a list (with length = n_classes) of 2- or 3-dimensional numpy arrays
-        of SHAP values, one for each corresponding class.
+        When n_classes (in B6) is 2, return a numpy array of raw/averaged SHAP values. When n_classes > 2, return a list
+        (with length = n_classes) of numpy arrays of SHAP values, one for each corresponding class.
 
     D. Remarks
     ----------
@@ -175,7 +187,7 @@ class RPClassifier:
     """
     def __init__(self,
                  base_model: Union[ANN_Classifier, LSTM_Classifier, Transformer_Classifier, TCN_Classifier],
-                 param_grid: list[int],
+                 param_grid: list[int] = list(range(8, 120, 8)) + list(range(120, 1201, 40)),
                  verbose: int = 1,
                  **kwargs):
 
@@ -186,7 +198,7 @@ class RPClassifier:
         self.base_model = base_model
         try:
             param_grid = list(param_grid)
-        except:
+        except TypeError:
             raise TypeError(f'param_grid must be (convertible to) a list. Now its type is {type(param_grid)}.')
         assert all([isinstance(param, int) and param > 0 for param in param_grid]), \
             f'All elements in param_grid must be a positive integer.'
@@ -197,7 +209,8 @@ class RPClassifier:
         self.kwargs = kwargs
 
         # Define attributes
-        self.metrics_list = ['AIC', 'AUROC', 'Accuracy', 'BIC', 'F1', 'NLL', 'Precision', 'Recall', 'Specificity', 'loss']
+        self.metrics_list = ['AIC', 'AUROC', 'Accuracy', 'BIC', 'F1', 'NLL', 'Precision', 'Recall', 'Specificity',
+                             'loss']
         self.is_fitted = False              # Boolean indicating whether the model has been fitted
         self.is_evaluated = False           # Boolean indicating whether the model has been evaluated
         self.n_features = None              # Number of features to be known from the data when fitted.
@@ -246,6 +259,8 @@ class RPClassifier:
         # Start grid search
         for param in self.param_grid:
 
+            start_time = time()
+
             # Storing characteristics of the best-performing model during cross-validation
             best_val_score, best_model, best_performance = float('-inf'), None, None
             best_train_TFPR, best_val_TFPR = None, None
@@ -288,9 +303,9 @@ class RPClassifier:
                 for (X_, y_, prefix) in [(X_train, y_train, 'Train_'), (X_val, y_val, 'Val_')]:
                     loss, y_pred_ = test_model(M, X_, y_, criterion, prefix=prefix, return_pred=True)
                     y_pred_ = y_pred_.cpu().numpy()
-                    y_pred_lab_ = np.where(y_pred_ <.5, 0, 1) if self.n_classes == 2 else np.argmax(y_pred_, axis=1)
+                    y_pred_lab_ = np.where(y_pred_ < .5, 0, 1) if self.n_classes == 2 else np.argmax(y_pred_, axis=1)
                     fit_result |= classify_metrics(y_, y_pred_lab_, prefix=prefix)
-                    auroc_, tpr_ ,fpr_ = classify_AUROC(y_, y_pred_, prefix=prefix, auroc_only=False)
+                    auroc_, tpr_, fpr_ = classify_AUROC(y_, y_pred_, prefix=prefix, auroc_only=False)
                     fit_result |= auroc_
                     if prefix == 'Train_':
                         train_tfpr_pair = [tpr_, fpr_]
@@ -311,9 +326,13 @@ class RPClassifier:
                     self.partial_SHAP[param] = partial(GradientShap(M).attribute,
                                                        baselines=torch.tensor(X_train, dtype=torch.float32))
 
+            end_time = time()
+            elapsed = end_time - start_time
+
             # Store the best-performing model and its associated statistics for each param in A2
             self.models_dict[param] = best_model
             self.models_performance_dict[param] = best_performance
+            self.models_performance_dict[param]['Elapsed_train_time'] = elapsed  # Elapsed time of the grid-search
             self.TFPR_dict['Train'][param] = best_train_TFPR
             self.TFPR_dict['Val'][param] = best_val_TFPR
             self.is_fitted = True
@@ -406,7 +425,9 @@ class RPClassifier:
 
     def get_SHAP(self,
                  param: int,
-                 X: torch.Tensor):
+                 X: torch.Tensor,
+                 average: Optional[Literal['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature']] = None):
+
         # Type and value check
         assert self.is_fitted, \
             'Call .fit before obtaining a fitted model.'
@@ -414,7 +435,7 @@ class RPClassifier:
             f"param (={param}) was not found in .partial_SHAP.)"
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X_train must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert X.shape[-1] == self.n_features, \
             (f"The number of features in X (={X.shape[-1]}) must match that used to "
@@ -423,6 +444,14 @@ class RPClassifier:
             assert X.shape[1] == self.n_timestamps, \
                 (f"The number of timestamps in X (={X.shape[1]}) must match that used to "
                  f"train the model (={self.n_timestamps}).")
+        if average is not None:
+            assert average in ['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature'], \
+                (f"average, if not None, must be in ['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature']. "
+                 f"Now its value is {average}.")
+            if len(X.shape) != 3:
+                assert average in ['Sample', 'Feature'], \
+                    (f"average, if not None and X is 2-dimensional, must be in ['Sample', 'Feature']. "
+                     f"Now its value is {average}.")
 
         torch.backends.cudnn.enabled = False            # Disable CUDNN before computing SHAP values
         if self.n_classes == 2:      # For binary classification cases, only one matrix will be returned.
@@ -431,14 +460,39 @@ class RPClassifier:
             attributes = [self.partial_SHAP[param](inputs=X, target=class_idx).cpu().detach().numpy()
                           for class_idx in range(self.n_classes)]
         torch.backends.cudnn.enabled = True             # Re-enable CUDNN
-        return attributes
+
+        if average is None:
+            return attributes
+        else:
+            if self.n_classes == 2:
+                if average == 'Sample':
+                    return np.mean(np.abs(attributes), axis=0)
+                elif average == 'Epoch':
+                    return np.mean(np.abs(attributes), axis=1)
+                elif average == 'Feature':
+                    return np.mean(np.abs(attributes), axis=2)
+                elif average == 'Sample_Epoch':
+                    return np.mean(np.mean(np.abs(attributes), axis=0), axis=0)
+                elif average == 'Sample_Feature':
+                    return np.mean(np.mean(np.abs(attributes), axis=0), axis=1)
+            else:
+                if average == 'Sample':
+                    return [np.mean(np.abs(attr), axis=0) for attr in attributes]
+                elif average == 'Epoch':
+                    return [np.mean(np.abs(attr), axis=1) for attr in attributes]
+                elif average == 'Feature':
+                    return [np.mean(np.abs(attr), axis=2) for attr in attributes]
+                elif average == 'Sample_Epoch':
+                    return [np.mean(np.mean(np.abs(attr), axis=0), axis=0) for attr in attributes]
+                elif average == 'Sample_Feature':
+                    return [np.mean(np.mean(np.abs(attr), axis=0), axis=1) for attr in attributes]
 
 ########################################################################################################################
 # Define a RiskPath model class for classification
 ########################################################################################################################
 
 
-class RPRegressor:
+class RP_Regressor:
     """
     A PyTorch RiskPath class for regression.
 
@@ -453,6 +507,7 @@ class RPRegressor:
         LSTM_Regressor: n_units
         Transformer_Regressor: d_model
         TCN_Regressor: n_units
+        Default setting: param_grid=list(range(8, 120, 8)) + list(range(120, 1201, 40))
     A3. verbose: An integer in [0, 1].
         Verbosity. No logging if 0, and information about the grid search over A2 will be displayed if 1.
         Default setting: verbose=1
@@ -514,13 +569,16 @@ class RPRegressor:
                Default setting: random_state=None
         :param kwargs: (Any extra runtime parameters of optimizer)
                Example: lr=0.001 for the learning rate parameter of the optimizer.
-    C2. evaluate(X, y):
+    C2. evaluate(X, y, prefix):
         Evaluate the models fitted in C2 with the feature set X and the target y.
         :param X: A 2- or 3-dimensional numpy array (or Torch.Tensor).
                Samples of the feature set with dimension as (sample size, number of features) or (sample size,
                number of timestamps, number of features).
         :param y: A 1-dimensional numpy array (or Torch.Tensor).
                Samples of the target with dimension as (sample size,).
+        :param prefix: A string.
+               The prefix used in the string for each performance metric.
+               Default setting: prefix='Test'
     C3. get_performance()
         Obtain a pandas.DataFrame summarizing the performance statistics of each fitted (and evaluated) model.
         :return: A Pandas DataFrame with rows as models and columns as evaluation metrics.
@@ -543,14 +601,22 @@ class RPRegressor:
         :param metric: metric: A string in B1.
                The name of the evaluation metric.
         :return: The fitted model of the user-specified metric.
-    C7. get_SHAP(param, X)
+    C7. get_SHAP(param, X, average)
         Compute the SHAP values (for each class) by explaining X with the model identified by param (where the
         explanation baseline is the dataset used to train the model).
         :param param: A positive integer in the grid in A2.
         :param X: A 2- or 3-dimensional numpy array (or Torch.Tensor).
                Samples of the feature set with dimension as (sample size, number of features) or (sample size,
                number of timestamps, number of features).
-        :return: A 2- or 3-dimensional numpy array of SHAP values (depending on the dimension of X).
+        :param average: A string or None.
+               The averaging technique used on the raw SHAP values. Its values can be chosen from below:
+               'Sample': The mean-absolute SHAP values, averaged across samples.
+               'Epoch': The mean-absolute SHAP values, averaged across time epochs.
+               'Feature': The mean-absolute SHAP values, averaged across features.
+               'Sample_Epoch': The mean-absolute SHAP values, averaged across samples and time epochs.
+               'Sample_Feature': The mean-absolute SHAP values, averaged across samples and features.
+               Default setting: average=None
+        :return: A numpy array of raw/averaged SHAP values.
 
     D. Remarks
     ----------
@@ -562,7 +628,7 @@ class RPRegressor:
     """
     def __init__(self,
                  base_model: Union[ANN_Regressor, LSTM_Regressor, Transformer_Regressor, TCN_Regressor],
-                 param_grid: list[int],
+                 param_grid: list[int] = list(range(8, 120, 8)) + list(range(120, 1201, 40)),
                  verbose: int = 1,
                  **kwargs):
 
@@ -573,7 +639,7 @@ class RPRegressor:
         self.base_model = base_model
         try:
             param_grid = list(param_grid)
-        except:
+        except TypeError:
             raise TypeError(f'param_grid must be (convertible to) a list. Now its type is {type(param_grid)}.')
         assert all([isinstance(param, int) and param > 0 for param in param_grid]), \
             f'All elements in param_grid must be a positive integer.'
@@ -628,6 +694,8 @@ class RPRegressor:
         # Start grid search
         for param in self.param_grid:
 
+            start_time = time()
+
             # Storing characteristics of the best-performing model during cross-validation
             best_val_score, best_model, best_performance = float('inf'), None, None
 
@@ -636,13 +704,11 @@ class RPRegressor:
                 X_train, X_val = np.take(X, train, axis=0), np.take(X, val, axis=0)
                 y_train, y_val = np.take(y, train), np.take(y, val)
 
-
                 # Create prediction model
                 if self.base_model == ANN_Classifier:
                     M = self.base_model(n_feat=X_train.shape[-1], n_units=int(param))
                 elif self.base_model == LSTM_Classifier:
-                    M = self.base_model(n_feat=X_train.shape[-1], n_units=int(param)
-                                        **self.kwargs)
+                    M = self.base_model(n_feat=X_train.shape[-1], n_units=int(param), **self.kwargs)
                 elif self.base_model == Transformer_Classifier:
                     M = self.base_model(n_feat=X_train.shape[-1], n_timestamps=self.n_timestamps, d_model=int(param),
                                         **self.kwargs)
@@ -685,9 +751,13 @@ class RPRegressor:
                     self.partial_SHAP[param] = partial(GradientShap(M).attribute,
                                                        baselines=torch.tensor(X_train, dtype=torch.float32))
 
+            end_time = time()
+            elapsed = end_time - start_time
+
             # Store the best-performing model and its associated statistics for each value of param in A2
             self.models_dict[param] = best_model
             self.models_performance_dict[param] = best_performance
+            self.models_performance_dict[param]['Elapsed_train_time'] = elapsed  # Elapsed time of the grid-search
             self.is_fitted = True
 
     def evaluate(self, X, y, prefix='Test'):
@@ -760,7 +830,8 @@ class RPRegressor:
 
     def get_SHAP(self,
                  param: int,
-                 X: torch.Tensor):
+                 X: torch.Tensor,
+                 average: Optional[Literal['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature']] = None):
         # Type and value check
         assert self.is_fitted, \
             'Call .fit before obtaining a fitted model.'
@@ -768,7 +839,7 @@ class RPRegressor:
             f"param (={param}) was not found in .partial_SHAP.)"
         try:
             X = torch.Tensor(X)
-        except:
+        except TypeError:
             raise TypeError(f'X_train must be (convertible to) a torch.Tensor. Now its type is {type(X)}.')
         assert X.shape[-1] == self.n_features, \
             (f"The number of features in X (={X.shape[-1]}) must match that used to "
@@ -777,10 +848,30 @@ class RPRegressor:
             assert X.shape[1] == self.n_timestamps, \
                 (f"The number of timestamps in X (={X.shape[1]}) must match that used to "
                  f"train the model (={self.n_timestamps}).")
+        if average is not None:
+            assert average in ['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature'], \
+                (f"average, if not None, must be in ['Sample', 'Epoch', 'Feature', 'Sample_Epoch', 'Sample_Feature']. "
+                 f"Now its value is {average}.")
+            if len(X.shape) != 3:
+                assert average in ['Sample', 'Feature'], \
+                    (f"average, if not None and X is 2-dimensional, must be in ['Sample', 'Feature']. "
+                     f"Now its value is {average}.")
 
         torch.backends.cudnn.enabled = False        # Disable CUDNN before computing SHAP values
         attributes = self.partial_SHAP[param](inputs=X).cpu().detach().numpy()
         torch.backends.cudnn.enabled = True         # Re-enable CUDNN
-        return attributes
+
+        if average is None:
+            return attributes
+        elif average == 'Sample':
+            return np.mean(np.abs(attributes), axis=0)
+        elif average == 'Epoch':
+            return np.mean(np.abs(attributes), axis=1)
+        elif average == 'Feature':
+            return np.mean(np.abs(attributes), axis=2)
+        elif average == 'Sample_Epoch':
+            return np.mean(np.mean(np.abs(attributes), axis=0), axis=0)
+        elif average == 'Sample_Feature':
+            return np.mean(np.mean(np.abs(attributes), axis=0), axis=1)
 
 ########################################################################################################################
