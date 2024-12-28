@@ -18,12 +18,12 @@
 ########################################################################################################################
 # Import packages
 ########################################################################################################################
+from ..Utils.benchmarking import Benchmark_Classifier
+from ..Utils.plots import plot_AUROC
+from ..Utils.timeseries_simulators import make_ts_classification
+from ..Utils.wavelet_transform import extract_wavelet
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
-from Utils.plots import plot_AUROC
-from Utils.timeseries_simulators import make_ts_classification
-from Utils.wavelet_transform import extract_wavelet
-from Utils.benchmarking import Benchmark_Classifier
 
 ########################################################################################################################
 # Experiment on RiskPath for binary classification
