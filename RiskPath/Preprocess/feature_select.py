@@ -29,7 +29,7 @@ from typing import Literal, Optional, Union
 ########################################################################################################################
 
 
-class FSClassifier(BaseEstimator, TransformerMixin):
+class FS_Classifier(BaseEstimator, TransformerMixin):
     """
     A. Runtime parameters
     ---------------------
@@ -219,7 +219,7 @@ class FSClassifier(BaseEstimator, TransformerMixin):
 ########################################################################################################################
 
 
-class FSRegressor(BaseEstimator, TransformerMixin):
+class FS_Regressor(BaseEstimator, TransformerMixin):
     """
     A. Runtime parameters
     ---------------------
