@@ -30,7 +30,7 @@ from functools import partial
 from sklearn.model_selection import KFold, StratifiedKFold
 from time import time
 from typing import Union, Literal, Optional
-from Utils.metrics import classify_metrics, classify_AUROC, classify_AIC_BIC, regress_metrics, regress_AIC_BIC
+from ..Utils.metrics import classify_metrics, classify_AUROC, classify_AIC_BIC, regress_metrics, regress_AIC_BIC
 
 ########################################################################################################################
 # Define a RiskPath model class for classification
