@@ -74,7 +74,7 @@ plot_SHAP_3D_movie(shap, feature_names=feature_names, top_n_features=10)
 	<img width="800" height="600" src="https://github.com/user-attachments/assets/73ed8833-c76c-483e-8c35-42c47236f572" alt="Animated_SHAP")
 </p>
 
-See [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1yBqKy2ZnF3Aq8QnBMAU03xyUCJTZu8Cr?usp=sharing) for a detailed tutorial on our other visualization tools for performance statistics and SHAP values. 
+See [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1S8rkrQi39-OUuc0hVasiNjMCGeadKum0?usp=sharing) for a detailed tutorial on our other visualization tools for performance statistics and SHAP values. 
 
 ![RiskPath_Visualization_Grid](https://github.com/user-attachments/assets/3e4f0c4e-f566-4f4c-aead-34dc4fd9331a)
 
