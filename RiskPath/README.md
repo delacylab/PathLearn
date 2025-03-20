@@ -15,7 +15,7 @@
 [![medRxiv_badge](https://img.shields.io/badge/medRxiv-2024.09.19.24313909-blue)](https://www.medrxiv.org/content/10.1101/2024.09.19.24313909v2)
 [![PubMed_badge](https://img.shields.io/badge/PubMed-PMC11451668-blue)](https://pmc.ncbi.nlm.nih.gov/articles/PMC11451668/)
 [![license_badge](https://img.shields.io/badge/License-Apache_2.0-8A2BE2)](https://www.apache.org/licenses/LICENSE-2.0)
-![Repo DOI badge](https://img.shields.io/badge/Repo_DOI-TBD-8A2BE2)
+[![Zenodo DOI](https://zenodo.org/badge/894175126.svg)](https://doi.org/10.5281/zenodo.15061547)
 
 <p align="center">
 	<img width="800" height="600" src="https://github.com/user-attachments/assets/f6ac67e4-68ff-4a25-bd17-bb471e3e86b6" 	alt="RiskPath_Pipeline_Visualized_Optional")
