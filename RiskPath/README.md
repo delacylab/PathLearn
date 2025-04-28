@@ -2,7 +2,7 @@
 
 <!-- Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0 -->
 <!-- Applying Apache 2.0: https://www.apache.org/legal/apply-license.html -->
-<!-- Badge generator: https://shields.io/badges -->
+<!-- Badge generator: [https://shields.io/badges](https://shields.io/badges) -->
 <!-- Badges: https://github.com/danmadeira/simple-icon-badges -->
 <!-- Conda packaging: https://stackoverflow.com/a/49487721 -->
 <!-- Emoji: https://gist.github.com/rxaviers/7360908 -->
@@ -12,10 +12,12 @@
 <!-- van der Schaar's autoprognosis: https://github.com/vanderschaarlab/autoprognosis -->
 
 [![tutorial_badge](https://img.shields.io/badge/Tutorial-RiskPath-green)](https://colab.research.google.com/drive/1S8rkrQi39-OUuc0hVasiNjMCGeadKum0?usp=sharing)
+[![Patterns_badge](https://img.shields.io/badge/Patterns-10.1016%2Fj.patter.2025.101240-red)](https://www.cell.com/patterns/fulltext/S2666-3899(25)00088-1)
 [![medRxiv_badge](https://img.shields.io/badge/medRxiv-2024.09.19.24313909-blue)](https://www.medrxiv.org/content/10.1101/2024.09.19.24313909v2)
-[![PubMed_badge](https://img.shields.io/badge/PubMed-PMC11451668-blue)](https://pmc.ncbi.nlm.nih.gov/articles/PMC11451668/)
+[![Zenodo DOI](https://img.shields.io/badge/Zenodo-15061547-yellow)](https://doi.org/10.5281/zenodo.15061547)
 [![license_badge](https://img.shields.io/badge/License-Apache_2.0-8A2BE2)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Zenodo DOI](https://zenodo.org/badge/894175126.svg)](https://doi.org/10.5281/zenodo.15061547)
+
+<!-- [![PubMed_badge](https://img.shields.io/badge/PubMed-PMC11451668-blue)](https://pmc.ncbi.nlm.nih.gov/articles/PMC11451668/) -->
 
 <p align="center">
 	<img width="800" height="600" src="https://github.com/user-attachments/assets/f6ac67e4-68ff-4a25-bd17-bb471e3e86b6" 	alt="RiskPath_Pipeline_Visualized_Optional")
@@ -108,16 +110,15 @@ Users are welcome to contribute to this section by providing their test results 
 Please cite the associated paper when using our code.
 
 ```
-@article{de Lacy2024.09.19.24313909,
-         author = {de Lacy, Nina and Ramshaw, Michael and Lam, Wai Yin},
-         title = {RiskPath: Explainable deep learning for multistep biomedical prediction in longitudinal data},
-	 elocation-id = {2024.09.19.24313909},
-         year = {2024},
-	 doi = {10.1101/2024.09.19.24313909},
-         publisher = {Cold Spring Harbor Laboratory Press},
-	 URL = {https://www.medrxiv.org/content/early/2024/09/22/2024.09.19.24313909},
-	 eprint = {https://www.medrxiv.org/content/early/2024/09/22/2024.09.19.24313909.full.pdf},
-         journal = {medRxiv}
+@article{deLacy2025,
+  title = {RiskPath: Explainable deep learning for multistep biomedical prediction in longitudinal data},
+  author = {de Lacy, Nina and Ramshaw, Michael and Lam, Wai Yin},
+  journal = {Patterns},
+  publisher = {Elsevier},
+  year = {2025},
+  doi = {10.1016/j.patter.2025.101240},
+  url = {https://doi.org/10.1016/j.patter.2025.101240},
+  issn = {2666-3899},
 }
 ```
 
