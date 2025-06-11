@@ -38,7 +38,7 @@ _RiskPath_ is a multistep predictive pipeline for temporally-sensitive biomedica
   
 # :computer: Installation #
 
-We provide a beta version of RiskPath for testing to ensure usability. After the paper's official acceptance, a release candidate (gamma version) will be available (through pip and/or conda installation). 
+We provide a beta version of RiskPath for testing to ensure usability. A release candidate (gamma version) will be available (through conda installation). 
 
 **Using gitclone and pip (AVAILABLE NOW)** 
 ```
@@ -85,8 +85,13 @@ See [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)
 
 | Class | Description |
 |---|---|
-| FS_Classifier * [![FeatureSelection_Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1BY8CqLi3Fj3MSMgkUJXjrFyHClVCWv4x?usp=sharing)| <ins>Feature selection</ins> aims to identify the feature subset relevant to the target variable. It tends to improve both computational efficiency and predictive performance in subsequent prediction tasks (Kohavi and John 1997). We provide a pipeline that integrates L1-regularized logistic regression (with cross-validation) and Boruta (Kursa and Rudnicki 2010) to effectively capture linearly and non-linearly relevant features for classification tasks.|
-| PaddingConcatenate * [![Concatenate Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19bQd80GcpZMv-4LKVrwAOwYEYP-zgOG0?usp=sharing)| Real-world time-series datasets are often irregular or non-square, with features lacking samples at certain timestamps. <ins>Feature imputation</ins> using surrogate data from other timestamps is required to ensure that predictive models can operate smoothly, avoiding common errors caused by missing data.|
+| Preprocess/feature_select.py * [![FeatureSelection_Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1BY8CqLi3Fj3MSMgkUJXjrFyHClVCWv4x?usp=sharing)| <ins>Feature selection</ins> aims to identify the feature subset relevant to the target variable. It tends to improve both computational efficiency and predictive performance in subsequent prediction tasks (Kohavi and John 1997). We provide a pipeline that integrates L1-regularized logistic regression (with cross-validation) and Boruta (Kursa and Rudnicki 2010) to effectively capture linearly and non-linearly relevant features for classification tasks.|
+| Preprocess/padding.py * [![Concatenate Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19bQd80GcpZMv-4LKVrwAOwYEYP-zgOG0?usp=sharing)| Real-world time-series datasets are often irregular or non-square, with features lacking samples at certain timestamps. <ins>Feature imputation</ins> using surrogate data from other timestamps is required to ensure that predictive models can operate smoothly, avoiding common errors caused by missing data.|
+| Utils/benchmarking.py *| To compare with the performance of RiskPath optimization, this script embeds commonly used machine learning algorithms (e.g., random forest, logistic regression, SVM) into a pipeline to fit and evaluate the embedded model with flattened 2-dimensional data.| 
+| Utils/wavelet_transform.py *| Wavelet transformation is used to convert a 3-dimensional time-series dataset into a 2-dimensional one that represents the former's frequency information.|
+| Utils/plots.py *| This script provides 9 different plotting functions used to visualize the performance statistics and feature explanability of the trained RiskPath model. See the images above for examples.|
+| Utils/knee_identifier.py *| A geometrical method to determine the knee (or elbow) of a curve interpolated by a set of values. This function is used for feature ablation, where the features with a predictor importance ranked higher than the knee are used for re-modeling.|
+| Utils/timeseries_simulators.py *| This script provides a simple method to simulate a synthetic time-series dataset for testing the functionality of RiskPath. See **Sample Script** for the simple one-line execution.|
 | RP_Classifier [![RiskPath Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1S8rkrQi39-OUuc0hVasiNjMCGeadKum0?usp=sharing)| <ins>RiskPath</ins> uses an embedded model (e.g. LSTM/Transformer/Temporal Convolutional Network) to effectively classify a target of interest by performing a grid-search over the embedded models' architecture. Leveraged by SHAP values for model interpretability, RiskPath achieves solid performance with an explainable mechanism.|
 
 <p align="right"> * Optional utilities </p>
