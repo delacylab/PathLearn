@@ -6,13 +6,12 @@ recent experiments on the ABCD v5.1 dataset show that the new algorithm achieves
 various mental health conditions. The new algorithm incorporates an internal attention-masking mechanism, 
 enabling the embedded transformer model to make accurate predictions without requiring imputation of missing input data. 
 Similar to *RiskPath*, the new algorithm integrates an optimization technique to efficiently identify the 
-best-performing structural hyperparameters for prediction. The package built for the new algorithm will include various utilities, 
+best-performing structural hyperparameter for prediction. The package built for the new algorithm will include various utilities, 
 including tools for feature selection and visualization. 
 
 Please stay tuned for the updates on the new algorithm. 
 
 To cite *RiskPath*, 
-
 
 ```
 @article{deLacy2025,
