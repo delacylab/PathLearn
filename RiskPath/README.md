@@ -1,3 +1,8 @@
+<div align="right">
+  Last update: 2025 June 20, 11:51 (by Wayne Lam)
+</div>
+<hr>
+
 # RiskPath - Explainable deep learning for multistep biomedical prediction in longitudinal data
 
 <!-- Apache 2.0: https://www.apache.org/licenses/LICENSE-2.0 -->
