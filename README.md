@@ -4,6 +4,10 @@
 
 <hr>
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a26e381d-8003-47f5-912d-6c5f675827d3" width="500"/>
+</div>
+
 This is a parent directory of the repositories for multiple interconnected time-series AI algorithms, including *RiskPath*, published in *Patterns* in 2025.
 
 While *RiskPath* is designed for time-series cohort data with regularly spaced timestamps, a forthcoming algorithm --- *SparsePath* --- relaxes this assumption, 
